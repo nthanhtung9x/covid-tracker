@@ -12,5 +12,13 @@ a {
 }
 
 * {
+  padding: 0;
+  margin: 0;
   box-sizing: border-box;
+}
+
+.custom-tooltip {
+  background-color: #fff;
+  padding: 12px;
+  box-shadow: 0 0 2px #f2f2f2;
 }
