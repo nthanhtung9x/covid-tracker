@@ -3,6 +3,7 @@ import Container from '../../layout/container';
 import * as Styles from '../../assets/styles/screens/world';
 import Footer from '../../components/footer';
 import { getCovidDataWorld } from '../api/dataCovid';
+import { timeSince } from '../../utils/helpers';
 
 function numberWithCommas(x) {
     var parts = x.toString().split(".");
@@ -11,8 +12,6 @@ function numberWithCommas(x) {
 }
 
 const World = ({ theme, data }) => {
-    console.log(data);
-
     const getCovidTotal = () => {
         return data.reduce((total, item) => {
             return total += item.cases;
@@ -54,7 +53,7 @@ const World = ({ theme, data }) => {
             <Styles.StatistWrapper themeStore={theme.mode}>
                 <Styles.TitleWrapper themeStore={theme.mode}>
                     <h1>Số liệu Covid-19 trên thế giới</h1>
-                    <p>Nguồn dữ 38 phút trước</p>
+                    <p>Nguồn dữ liệu {timeSince(new Date(data[0].updated))} trước</p>
                 </Styles.TitleWrapper>
                 <Styles.Item themeStore={theme.mode}>
                     <span>Hôm nay: +{numberWithCommas(getCovidToday())}</span>

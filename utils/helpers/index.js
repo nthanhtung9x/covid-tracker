@@ -24,5 +24,5 @@ export function timeSince(date) {
     if (interval > 1) {
       return Math.floor(interval) + " phút";
     }
-    return Math.floor(seconds) + " seconds";
+    return seconds ? Math.floor(seconds) : 'Vài' + " giây";
 }
