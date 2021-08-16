@@ -38,7 +38,8 @@ const ColumnChart = ({ data, type }) => {
   const drawChart = (data, type) => {
     let result = [];
     if (type === 'total') {
-      result = data?.covidDataProvince?.cases?.slice(0, 5).map(item => {
+      let rs = data?.covidDataProvince?.cases.sort((a,b) => b.z - a.z);
+      result = rs.slice(0, 5).map(item => {
         const custom = {
           name: item.x,
           'Ca nhiễm' : +item.z,
@@ -46,7 +47,8 @@ const ColumnChart = ({ data, type }) => {
         return custom;
       });
     } else {
-      result = data?.covidDataProvince?.cases?.slice(0, 5).map(item => {
+      let rs = data?.covidDataProvince?.cases.sort((a,b) => b.y - a.y);
+      result = rs.slice(0, 5).map(item => {
         const custom = {
           name: item.x,
           'Ca nhiễm' : +item.y,

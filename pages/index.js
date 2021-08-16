@@ -7,7 +7,7 @@ import ColumnChart from '../components/bar-chart';
 import ArrowIcon from '../public/images/arrow-down.svg';
 import Image from 'next/image';
 import Footer from '../components/footer';
-import { getChartDataCovid, getDataCovid } from './api/dataCovid';
+import { getChartDataCovid, getDataCovid, getNewsService } from './api/dataCovid';
 import {
   COVID_CASES_HANOI_VERSION_2,
   COVID_CASES_HCMC,
@@ -17,9 +17,12 @@ import {
   COVID_VACCINE_VIETNAM,
   TRIGGER_HOOKS,
   VNEXPRESS_COVID_DATA,
+  VNEXPRESS_NEWS,
 } from "../utils/constants";
 import axios from 'axios';
 import TinyChart from '../components/tiny-bar-chart';
+import TwoFullChart from '../components/two-full-chart';
+import { timeSince } from '../utils/helpers';
 
 function numberWithCommas(x) {
   var parts = x.toString().split(".");
@@ -27,14 +30,23 @@ function numberWithCommas(x) {
   return parts.join(",");
 }
 
-export default function Home({ theme, data, dataChart }) {
+export default function Home({ theme, data, dataChart, news }) {
   const [position, setPosition] = useState('VN');
   const [session4, setSession4] = useState({
     total: '',
     today: '',
   });
   const [typeTotal, setTypeTotal] = useState(7);
-  const [typeTotalTiny, setTypeTotalTiny] = useState(0);
+  const [typeTotalTiny, setTypeTotalTiny] = useState(7);
+  const [province, setProvince] = useState({
+    data: data?.covidDataProvince?.cases?.slice(0, 4),
+    hasMore: true,
+  });
+  const [toggleProvince, setToggleProvince] = useState(true);
+  const [newsData, setNewsData] = useState({
+    data: news.slice(0,5),
+    hasMore: true,
+  });
   const getTotalRecovered = (list) => {
     let date = new Date();
     let day = ("0" + date.getDate()).slice(-2);
@@ -140,7 +152,7 @@ export default function Home({ theme, data, dataChart }) {
         <Styles.TitleWrapper themeStore={theme.mode}>
           <h1>Số liệu Covid-19 tại Việt Nam</h1>
           <p>Nguồn dữ liệu từ Zing News & VnExpress</p>
-          <p>Cập nhật: 5 giờ trước</p>
+          <p>Cập nhật: {timeSince(new Date(news[0].pubDate))} trước</p>
         </Styles.TitleWrapper>
         <Styles.SubText>Kể từ khi dịch bùng phát từ đầu 2020 đến nay</Styles.SubText>
         <Styles.TotalWrapper>
@@ -287,67 +299,84 @@ export default function Home({ theme, data, dataChart }) {
       </Styles.ChartWrapper>
     
       <Styles.StatistWrapper themeStore={theme.mode}>
-        <Styles.AllCountryTitle>
+        <Styles.AllCountryTitle onClick={() => setToggleProvince(!toggleProvince)}>
           <p>Tình hình COVID-19 tại các tỉnh thành</p>
-          <Image src={ArrowIcon}/>
+          <Image 
+            src={ArrowIcon}
+            className={toggleProvince ? 'down' : 'up' }
+            alt="arrow"
+          />
         </Styles.AllCountryTitle>
-        <Styles.ColumnWrapper>
-          <Styles.ColumnTitle className="bold">#</Styles.ColumnTitle>
-          <Styles.ColumnTitle className="name bold">Tỉnh</Styles.ColumnTitle>
-          <Styles.ColumnTitle className="bold">Hôm nay</Styles.ColumnTitle>
-          <Styles.ColumnTitle className="bold">Tổng</Styles.ColumnTitle>
-
-          <Styles.ColumnItem themeStore={theme.mode}>
-            <Styles.ColumnItemChild className="bold">1</Styles.ColumnItemChild>
-            <Styles.ColumnItemChild className="name bold">TP.HCM</Styles.ColumnItemChild>
-            <Styles.ColumnItemChild className="today">+2.349</Styles.ColumnItemChild>
-            <Styles.ColumnItemChild className="total">124.153</Styles.ColumnItemChild>
-          </Styles.ColumnItem>
-
-          <Styles.ColumnItem themeStore={theme.mode}>
-            <Styles.ColumnItemChild className="bold">1</Styles.ColumnItemChild>
-            <Styles.ColumnItemChild className="name bold">TP.HCM</Styles.ColumnItemChild>
-            <Styles.ColumnItemChild className="today">+2.349</Styles.ColumnItemChild>
-            <Styles.ColumnItemChild className="total">124.153</Styles.ColumnItemChild>
-          </Styles.ColumnItem>
-          
-          <Styles.ButtonHide themeStore={theme.mode}>
-            <p>Thu gọn</p>
-          </Styles.ButtonHide>
-        </Styles.ColumnWrapper>
+        {
+          toggleProvince && 
+            <Styles.ColumnWrapper>
+            <Styles.ColumnTitle className="bold">#</Styles.ColumnTitle>
+            <Styles.ColumnTitle className="name bold">Tỉnh</Styles.ColumnTitle>
+            <Styles.ColumnTitle className="bold">Hôm nay</Styles.ColumnTitle>
+            <Styles.ColumnTitle className="bold">Tổng</Styles.ColumnTitle>
+            {
+              province?.data?.map((item, index) => {
+                return <Styles.ColumnItem key={index} themeStore={theme.mode}>
+                <Styles.ColumnItemChild className="bold">{index + 1}</Styles.ColumnItemChild>
+                <Styles.ColumnItemChild className="name bold">{item.x}</Styles.ColumnItemChild>
+                <Styles.ColumnItemChild className="today">+{numberWithCommas(item.y)}</Styles.ColumnItemChild>
+                <Styles.ColumnItemChild className="total">{numberWithCommas(item.z)}</Styles.ColumnItemChild>
+              </Styles.ColumnItem>
+              })
+            }
+            
+            <Styles.ButtonHide themeStore={theme.mode} onClick={() => {
+              if (province.hasMore) {
+                setProvince({
+                  data: data?.covidDataProvince?.cases,
+                  hasMore: false,
+                })
+              } else {
+                setProvince({
+                  data: data?.covidDataProvince?.cases?.slice(0, 4),
+                  hasMore: true,
+                })
+              }
+            }}>
+              <p>{province.hasMore ? 'Xem thêm' : 'Thu gọn' }</p>
+            </Styles.ButtonHide>
+          </Styles.ColumnWrapper>
+          }
       </Styles.StatistWrapper>
     
       <Styles.StatistWrapper themeStore={theme.mode}>
         <Styles.FlexVaccine>
           <Styles.FlexVaccineItem className="vaccine-active" themeStore={theme.mode}>
             <p>Tổng người đã tiêm</p>
-            <b>8.460.013</b>
+            <b>{numberWithCommas(data?.covidVaccineVN?.first?.total + data?.covidVaccineVN?.second?.total)}</b>
           </Styles.FlexVaccineItem>
           <Styles.FlexVaccineItem themeStore={theme.mode}>
             <p>Đã tiêm 1 mũi</p>
-            <b>7.514.207</b>
+            <b>{numberWithCommas(data?.covidVaccineVN?.first?.total)}</b>
           </Styles.FlexVaccineItem>
           <Styles.FlexVaccineItem themeStore={theme.mode}>
             <p>Đã tiêm 2 mũi</p>
-            <b>945.806</b>
+            <b>{numberWithCommas(data?.covidVaccineVN?.second?.total)}</b>
           </Styles.FlexVaccineItem>
         </Styles.FlexVaccine>
         <Styles.FlexTipVaccine>
           <section>% dân số đã tiêm 2 mũi</section>
-          <span>1.35%</span>
+          <span>{numberWithCommas(data?.covidVaccineVN?.secondRatio.toFixed(2))}%</span>
         </Styles.FlexTipVaccine>
-        <Styles.ProgressVaccine progressVaccine={13}></Styles.ProgressVaccine>
-        <Styles.ProgressSubText>Mục tiêu: 70% dân số (tương đương 150 triệu liều vaccine)</Styles.ProgressSubText>
+        <Styles.ProgressVaccine progressVaccine={data?.covidVaccineVN?.secondRatio.toFixed(2)}></Styles.ProgressVaccine>
+        <Styles.ProgressSubText>
+          Mục tiêu: 70% dân số (tương đương 150 triệu liều vaccine)
+        </Styles.ProgressSubText>
       </Styles.StatistWrapper>
     
       <Styles.ChartWrapper>
         <Styles.ChartItem themeStore={theme.mode}>
           <h1>Tổng số người tiêm vaccine</h1>
-          <ColumnChart/>
+          <TwoFullChart data={data?.covidVaccineVN} type={'total'}/>
         </Styles.ChartItem>
         <Styles.ChartItem themeStore={theme.mode}>
           <h1>Số lượng tiêm vaccine theo ngày</h1>
-          <ColumnChart/>
+          <TwoFullChart data={data?.covidVaccineVN} type={''}/>
         </Styles.ChartItem>
       </Styles.ChartWrapper>
     
@@ -356,46 +385,41 @@ export default function Home({ theme, data, dataChart }) {
           <h1>Tin mới nhất</h1>
         </Styles.TitleWrapper>
         <Styles.ListNews themeStore={theme.mode}>
-            <li>
-              <Styles.ThumnailNew>
-                <img 
-                  src="https://i-vnexpress.vnecdn.net/2021/08/08/kiemtragiayto-1628428403-4290-1628428516.jpg"/>
-              </Styles.ThumnailNew>
-              <Styles.ContentNew themeStore={theme.mode}>
-                <article>Người đi đường phải có lịch trực, lịch làm việc của cơ quan</article>
-                <h4>Ngoài giấy đi đường có xác nhận của cơ quan và chính quyền, người đi đường cần có CCCD/CMTND, lịch trực, lịch làm việc của cơ quan.</h4>
-                <span>Theo VnExpress</span>
-                <p>20 giờ trước</p>
-              </Styles.ContentNew>
-            </li>
-
-            <li>
-              <Styles.ThumnailNew>
-                <img 
-                  src="https://i-vnexpress.vnecdn.net/2021/08/08/kiemtragiayto-1628428403-4290-1628428516.jpg"/>
-              </Styles.ThumnailNew>
-              <Styles.ContentNew themeStore={theme.mode}>
-                <article>Người đi đường phải có lịch trực, lịch làm việc của cơ quan</article>
-                <h4>Ngoài giấy đi đường có xác nhận của cơ quan và chính quyền, người đi đường cần có CCCD/CMTND, lịch trực, lịch làm việc của cơ quan.</h4>
-                <span>Theo VnExpress</span>
-                <p>20 giờ trước</p>
-              </Styles.ContentNew>
-            </li>
-
-            <li>
-              <Styles.ThumnailNew>
-                <img 
-                  src="https://i-vnexpress.vnecdn.net/2021/08/08/kiemtragiayto-1628428403-4290-1628428516.jpg"/>
-              </Styles.ThumnailNew>
-              <Styles.ContentNew themeStore={theme.mode}>
-                <article>Người đi đường phải có lịch trực, lịch làm việc của cơ quan</article>
-                <h4>Ngoài giấy đi đường có xác nhận của cơ quan và chính quyền, người đi đường cần có CCCD/CMTND, lịch trực, lịch làm việc của cơ quan.</h4>
-                <span>Theo VnExpress</span>
-                <p>20 giờ trước</p>
-              </Styles.ContentNew>
-            </li>
-            <Styles.ButtonHide themeStore={theme.mode}>
-              <p>Xem thêm</p>
+          {
+            newsData.data.map((item, index) => {
+              return  <li key={index}>
+                <a href={item.link} target="_blank">
+                  <Styles.ThumnailNew>
+                    <img 
+                      src={item.thumbnail}
+                      alt={item.thumbnail}
+                    />
+                  </Styles.ThumnailNew>
+                  <Styles.ContentNew themeStore={theme.mode}>
+                    <article>{item.title}</article>
+                    <h4>{item.description.substring(0, 40)}</h4>
+                    <span>Theo Vietnamnet</span>
+                    <p>{timeSince(new Date(item.pubDate))} trước</p>
+                  </Styles.ContentNew>
+                </a>
+              </li>
+            })
+          }
+           
+            <Styles.ButtonHide themeStore={theme.mode} onClick={() => {
+              if(newsData.hasMore) {
+                setNewsData({
+                  data: news,
+                  hasMore: false,
+                })
+                return;
+              }
+              setNewsData({
+                data: news.slice(0, 5),
+                hasMore: true,
+              })
+            }}>
+              <p>{newsData.hasMore ? 'Xem thêm' : 'Thu gọn'}</p>
           </Styles.ButtonHide>
         </Styles.ListNews>
       </Styles.StatistWrapper>
@@ -431,9 +455,8 @@ export const dateFormater = (data) => {
 
 
 export async function getStaticProps(context) {
-  // const data = await getDataCovid();
   const dataChart = await getChartDataCovid();
-
+  const getNews = await getNewsService();
   const covidDataVN = await axios
     .get(COVID_CASES_VIETNAM)
     .then((c) => c.data.data);
@@ -467,6 +490,7 @@ export async function getStaticProps(context) {
         covidDataVnExpress,
       },
       dataChart: dataChart.data,
+      news: getNews.items,
     }, // will be passed to the page component as props
   }
 }

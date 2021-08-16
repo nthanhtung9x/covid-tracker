@@ -20,7 +20,7 @@ const Header = ({ theme, setToggleTheme }) => {
             <Styles.ToggleTheme>
                 {
                     toggle ? 
-                        <Image src={MoonIcon} onClick={() => {
+                        <Image alt="moon" src={MoonIcon} onClick={() => {
                             setToggle(!toggle);
                             if (theme === 'light') {
                                 setToggleTheme({mode: 'dark'});
@@ -29,7 +29,7 @@ const Header = ({ theme, setToggleTheme }) => {
                             setToggleTheme({mode: 'light'});
                         }}/>
                     :
-                        <Image src={SunIcon} onClick={() => {
+                        <Image alt="sun" src={SunIcon} onClick={() => {
                             setToggle(!toggle);
                             if (theme === 'light') {
                                 setToggleTheme({mode: 'dark'});

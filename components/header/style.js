@@ -1,4 +1,5 @@
-import styled from '../../assets/styles/base/styled-component';
+import styled, { keyframes } from '../../assets/styles/base/styled-component';
+import { mediaQuery } from '../../assets/styles/mixins/mediaQuery';
 
 
 export const HeaderWrapper = styled.div`
@@ -12,6 +13,7 @@ export const HeaderWrapper = styled.div`
     left: 0;
     box-shadow: 0 0 8px #c1aeae;
     background-color: ${({ themeStore, theme }) => themeStore === 'light' ? theme.colors.bgLightHeader : theme.colors.bgDarkHeader};
+    min-height: 64px;
 `;
 
 export const Logo = styled.div`
@@ -21,10 +23,13 @@ export const Logo = styled.div`
 `;
 
 export const NavMenu = styled.div`
-    display:flex;
+    display:none;
     align-items: center;
     justify-content: center;
     flex: 1;
+    ${mediaQuery.md`
+        display: flex;
+    `};
     a {
         font-size: ${({ theme }) => theme.fontSizes[1]};
         font-weight: ${({ theme }) => theme.fontWeights[0]};
@@ -45,11 +50,24 @@ export const NavMenu = styled.div`
     }
 `;
 
+const animationTheme = keyframes`
+  0% { transform: scale(0) rotate(0deg)};
+  100% { transform: scale(1) rotate(360deg)};
+`;
+
+const animationThemenWebkit = `@-webkit-keyframes'
+    0% { transform: scale(0) rotate(0deg)};
+    100% { transform: scale(1) rotate(360deg)};
+'`;
+
 export const ToggleTheme = styled.div`
     width: 150px;
     display:flex;
     align-items:center;
     justify-content: flex-end;
+    transform: scale(0) rotate(0deg);
+    animation: ${animationTheme || animationThemenWebkit} 2s;
+    animation-fill-mode: forwards;
     img {
         width: 30px;
         height: 30px;

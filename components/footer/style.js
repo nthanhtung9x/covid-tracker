@@ -1,10 +1,15 @@
 import styled from '../../assets/styles/base/styled-component';
+import { mediaQuery } from '../../assets/styles/mixins/mediaQuery';
 
 export const FooterLink = styled.div`
     text-align: center;
     width: 100%;
     min-height: 100px;
     margin-top: 40px;
+    margin-bottom: 50px;
+    ${mediaQuery.md`
+        margin-bottom: 0;
+    `}
     a {
         font-size: ${({ theme }) => theme.fontSizes[1]};
         font-weight: ${({ theme }) => theme.fontWeights[0]};

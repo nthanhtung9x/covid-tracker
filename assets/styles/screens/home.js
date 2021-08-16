@@ -1,11 +1,15 @@
 import styled from '../base/styled-component';
+import { mediaQuery } from '../mixins/mediaQuery';
 
 export const StatistWrapper = styled.div`
-    width: 80%; 
+    width: 95%; 
     margin: 0 auto 20px;
     padding: 10px;
     border-radius: 8px;
     background-color: ${({ themeStore, theme }) => themeStore === 'light' ? theme.colors.bgLightHeader : theme.colors.bgDarkHeader};
+    ${mediaQuery.md`
+        width: 80%;
+    `}
 `; 
 
 export const TitleWrapper = styled.div`
@@ -19,8 +23,11 @@ export const TitleWrapper = styled.div`
     background-color: ${({ themeStore, theme }) => themeStore === 'light' ? theme.colors.Grey : theme.colors.blockDark};
 
     h1 {
-        font-size: ${({ theme }) => theme.fontSizes[4]};
+        font-size: ${({ theme }) => theme.fontSizes[2]};
         font-weight: ${({ theme }) => theme.fontWeights[2]};
+        ${mediaQuery.md`
+            font-size: ${({ theme }) => theme.fontSizes[4]};
+        `}
     }
     p {
         font-size: ${({ theme }) => theme.fontSizes[0]};
@@ -59,8 +66,11 @@ export const Item = styled.div`
         min-height: 20px;
     }
     p {
-        font-size: ${({ theme }) => theme.fontSizes[5]};
+        font-size: ${({ theme }) => theme.fontSizes[4]};
         font-weight: ${({ theme }) => theme.fontWeights[2]};
+        ${mediaQuery.md`
+            font-size: ${({ theme }) => theme.fontSizes[5]};
+        `}
     }
     section {
         border: 8px;
@@ -92,9 +102,13 @@ export const Item = styled.div`
                 left: 50%;
                 transform: translate(-50%, -50%);
                 z-index: 1;
-                font-size: ${({ theme }) => theme.fontSizes[1]};
+                font-size: ${({ theme }) => theme.fontSizes[0]};
                 font-weight: ${({ theme }) => theme.fontWeights[1]};
+                letter-spacing: -0.44px;
                 color: ${({ theme }) => theme.colors.Yellow};
+                ${mediaQuery.md`
+                    font-size: ${({ theme }) => theme.fontSizes[1]};
+                `}
             }
         }
     }
@@ -119,9 +133,13 @@ export const Item = styled.div`
                 left: 50%;
                 transform: translate(-50%, -50%);
                 z-index: 1;
-                font-size: ${({ theme }) => theme.fontSizes[1]};
+                font-size: ${({ theme }) => theme.fontSizes[0]};
                 font-weight: ${({ theme }) => theme.fontWeights[1]};
+                letter-spacing: -0.44px;
                 color: ${({ theme }) => theme.colors.Green};
+                ${mediaQuery.md`
+                    font-size: ${({ theme }) => theme.fontSizes[1]};
+                `}
             }
         }
     }
@@ -146,9 +164,13 @@ export const Item = styled.div`
                 left: 50%;
                 transform: translate(-50%, -50%);
                 z-index: 1;
-                font-size: ${({ theme }) => theme.fontSizes[1]};
+                font-size: ${({ theme }) => theme.fontSizes[0]};
                 font-weight: ${({ theme }) => theme.fontWeights[1]};
+                letter-spacing: -0.44px;
                 color: ${({ theme }) => theme.colors.Red};
+                ${mediaQuery.md`
+                    font-size: ${({ theme }) => theme.fontSizes[1]};
+                `}
             }
         }
     }
@@ -177,9 +199,13 @@ export const Item = styled.div`
                 left: 50%;
                 transform: translate(-50%, -50%);
                 z-index: 1;
-                font-size: ${({ theme }) => theme.fontSizes[1]};
+                font-size: ${({ theme }) => theme.fontSizes[0]};
                 font-weight: ${({ theme }) => theme.fontWeights[1]};
+                letter-spacing: -0.44px;
                 color: ${({ themeStore, theme }) => themeStore === 'light' ? '#6B7280' : '#fff'};
+                ${mediaQuery.md`
+                    font-size: ${({ theme }) => theme.fontSizes[1]};
+                `}
             }
         }
     }
@@ -190,8 +216,11 @@ export const SideBar = styled.div`
     display:flex;
     align-items: center;
     justify-content: center;
-    width: 60%;
+    width: 97%;
     margin: 12px auto;
+    ${mediaQuery.md`
+        width: 60%;
+    `}
 `;
 
 export const SideBarChart = styled.div`
@@ -229,21 +258,27 @@ export const SideBarItem = styled.div`
 `;
 
 export const ChartWrapper = styled.div`
-    width: 80%;
+    width: 95%;
     margin: auto;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    ${mediaQuery.md`
+        width: 90%;
+    `}
 `;
 
 export const ChartItem = styled.div`
     border-radius: 8px;
     background-color: ${({ themeStore, theme }) => themeStore === 'light' ? theme.colors.bgLightHeader : theme.colors.bgDarkHeader};
     padding: 20px;
-    width:48%;
+    width:100%;
     margin-bottom: 20px;
+    ${mediaQuery.md`
+        width: 48%;
+    `}
     h1 {
         font-size: ${({ theme }) => theme.fontSizes[1]};
         text-align: center;
@@ -270,6 +305,15 @@ export const AllCountryTitle = styled.div`
     img {
         width: 12px;
         height: 12px;
+        transition: all 0.3s;
+        &.down {
+            transform: rotate(0deg);
+            transition: all 0.3s;
+        }
+        &.up {
+            transform: rotate(180deg);
+            transition: all 0.3s;
+        }
     }
 `;
 
@@ -344,6 +388,7 @@ export const FlexVaccine = styled.div`
     width: 100%;
     display:Flex;
     align-items: center;
+    
 `;
 
 export const FlexVaccineItem = styled.div`
@@ -366,12 +411,20 @@ export const FlexVaccineItem = styled.div`
         }
     }}
     p {
-        font-size: ${({ theme }) => theme.fontSizes[2]};
+        font-size: ${({ theme }) => theme.fontSizes[0]};
         font-weight: ${({ theme }) => theme.fontWeights[1]};
+        letter-spacing: -0.94px;
+        ${mediaQuery.md`
+            font-size: ${({ theme }) => theme.fontSizes[2]};
+        `}
     }
     b {
-        font-size: ${({ theme }) => theme.fontSizes[4]};
+        font-size: ${({ theme }) => theme.fontSizes[2]};
         font-weight: ${({ theme }) => theme.fontWeights[2]};
+        letter-spacing: -0.44px;
+        ${mediaQuery.md`
+            font-size: ${({ theme }) => theme.fontSizes[4]};
+        `}
     }
     &.vaccine-active {
         color: ${({ theme }) => theme.colors.Green};
@@ -439,17 +492,30 @@ export const ListNews = styled.ul`
         &:hover {
             background-color: ${({ themeStore, theme }) => themeStore === 'light' ? theme.colors.Grey : theme.colors.blockDark};
         }
+        a {
+            display:flex;
+            width: 100%;
+            height: 100%;
+        }
     }
 `;
 
 export const ThumnailNew = styled.div`
-    width: 20%;
-    height: 200px;
+    width: 30%;
+    height: 100%;
     text-align:center;
+    ${mediaQuery.md`
+        width: 20%;
+        height: 200px;
+    `}
     img {
-        width: 128px;
-        height: 128px;
+        width: 100%;
+        height: 100px;
         object-fit: cover;
+        ${mediaQuery.md`
+            width: 128px;
+            height: 128px;
+        `}
     }
 `;
 
@@ -457,16 +523,22 @@ export const ContentNew = styled.div`
     width: 70%;
     padding-left: 12px;
     article {
-        font-size: ${({ theme }) => theme.fontSizes[3]};
+        font-size: ${({ theme }) => theme.fontSizes[1]};
         font-weight: ${({ theme }) => theme.fontWeights[2]};
         cursor: pointer;
+        ${mediaQuery.md`
+            font-size: ${({ theme }) => theme.fontSizes[3]};
+        `}
     }
     h4 {
-        font-size: ${({ theme }) => theme.fontSizes[1]};
+        font-size: ${({ theme }) => theme.fontSizes[0]};
         font-weight: ${({ theme }) => theme.fontWeights[0]};
         margin: 4px 0;
         color: ${({ themeStore, theme }) => themeStore === 'light' ? '#000' : '#D1D5DB'};
         cursor: pointer;
+        ${mediaQuery.md`
+            font-size: ${({ theme }) => theme.fontSizes[1]};
+        `}
     }
     span {
         font-size: ${({ theme }) => theme.fontSizes[0]};
@@ -474,8 +546,11 @@ export const ContentNew = styled.div`
         cursor: pointer;
     }
     p {
-        font-size: ${({ theme }) => theme.fontSizes[1]};
+        font-size: ${({ theme }) => theme.fontSizes[0]};
         font-weight: ${({ theme }) => theme.fontWeights[2]};
         cursor: pointer;
+        ${mediaQuery.md`
+            font-size: ${({ theme }) => theme.fontSizes[1]};
+        `}
     }
 `;
